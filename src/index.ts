@@ -4,7 +4,7 @@ import cors from "cors";
 import Express from "express";
 import session from "express-session";
 import "reflect-metadata";
-import { formatArgumentValidationError } from "type-graphql";
+
 import { createConnection } from "typeorm";
 import { redis } from "./redis";
 import { createAuthorsLoader } from "./utils/authorsLoader";
@@ -17,11 +17,11 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema,
-    formatError: formatArgumentValidationError,
+
     context: ({ req, res }: any) => ({
       req,
       res,
-      authorsLoader: createAuthorsLoader()
+      authorsLoader: createAuthorsLoader(),
     }),
     validationRules: [
       // queryComplexity({
@@ -46,7 +46,7 @@ const main = async () => {
       //     })
       //   ]
       // }) as any
-    ]
+    ],
   });
 
   const app = Express();
@@ -56,14 +56,14 @@ const main = async () => {
   app.use(
     cors({
       credentials: true,
-      origin: "http://localhost:3000"
+      origin: "http://localhost:3000",
     })
   );
 
   app.use(
     session({
       store: new RedisStore({
-        client: redis as any
+        client: redis as any,
       }),
       name: "qid",
       secret: "aslkdfjoiq12312",
@@ -72,8 +72,8 @@ const main = async () => {
       cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24 * 7 * 365 // 7 years
-      }
+        maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
+      },
     })
   );
 
@@ -84,4 +84,4 @@ const main = async () => {
   });
 };
 
-main().catch(err => console.error(err));
+main().catch((err) => console.error(err));

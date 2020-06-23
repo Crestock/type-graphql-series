@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  OneToMany,
+} from "typeorm";
 import { ObjectType, Field, ID, Root } from "type-graphql";
+import { Quote } from "./Quote";
 
 @ObjectType()
 @Entity()
@@ -30,4 +37,8 @@ export class User extends BaseEntity {
 
   @Column("bool", { default: false })
   confirmed: boolean;
+
+  @Field(() => [Quote])
+  @OneToMany(() => Quote, (quote) => quote.user, { cascade: ["insert"] })
+  quotes: Quote[];
 }
